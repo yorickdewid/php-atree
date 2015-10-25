@@ -16,8 +16,6 @@ typedef struct _php_atree_db_object  {
 	art_tree *t;
 
 	zend_bool exception;
-
-	zend_llist free_list;
 } php_atree_db_object;
 
 /* Handlers */
@@ -52,6 +50,25 @@ static zend_function_entry php_atree_class_methods[] = {
 };
 /* }}} */
 
+static zend_object_value php_atree_object_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+{
+	zend_object_value retval;
+	php_atree_db_object *intern;
+
+	/* Allocate memory for it */
+	intern = emalloc(sizeof(php_atree_db_object));
+	memset(intern, 0, sizeof(php_atree_db_object));
+	intern->exception = 0;
+
+	zend_object_std_init(&intern->zo, class_type TSRMLS_CC);
+	object_properties_init(&intern->zo, class_type);
+
+	retval.handlers = (zend_object_handlers *) &atree_object_handlers;
+
+	return retval;
+}
+/* }}} */
+
 /* {{{ PHP_MINIT_FUNCTION
 */
 PHP_MINIT_FUNCTION(atree)
@@ -62,7 +79,7 @@ PHP_MINIT_FUNCTION(atree)
 
 	/* Register Atree 3 Class */
 	INIT_CLASS_ENTRY(ce, "Atree", php_atree_class_methods);
-	ce.create_object = php_sqlite3_object_new;
+	ce.create_object = php_atree_object_new;
 	atree_object_handlers.clone_obj = NULL;
 	php_atree_sc_entry = zend_register_internal_class(&ce TSRMLS_CC);
 
@@ -75,9 +92,9 @@ PHP_MINIT_FUNCTION(atree)
 PHP_MINFO_FUNCTION(atree)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "Adaptive Tree support", "enabled");
+	php_info_print_table_row(2, "Adaptive Tree suppport", "enabled");
 	php_info_print_table_row(2, "Atree module version", PHP_ATREE_VERSION);
-	php_info_print_table_row(2, "Tree algorithm", "ART");
+	php_info_print_table_row(2, "Tree algorithm", "LibART");
 	php_info_print_table_end();
 
 	DISPLAY_INI_ENTRIES();
