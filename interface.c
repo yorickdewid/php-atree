@@ -168,7 +168,7 @@ PHP_METHOD(atree, delete)
 int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *val) {
 	zval *arr = data;
 
-	add_next_index_string(arr, (char *)val, 1);
+	add_assoc_stringl_ex(arr, (char *)key, key_len+1, (char *)val, strlen(val), 1);
 	return 0;
 }
 
