@@ -31,7 +31,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_atree_put, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_atree_opr, 0)
-        ZEND_ARG_INFO(0, key)
+	ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_atree_void, 0)
@@ -46,7 +46,7 @@ static void php_atree_error(php_atree_db_object *obj, char *format, ...)
 	char *message;
 	TSRMLS_FETCH();
 
-	va_start(arg, format); 
+	va_start(arg, format);
 	vspprintf(&message, 0, format, arg);
 	va_end(arg);
 
@@ -81,10 +81,10 @@ PHP_METHOD(atree, init)
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(object TSRMLS_CC);
 
-        if (obj->initialised) {
-                zend_throw_exception(zend_exception_get_default(TSRMLS_C), "Already initialised Atree Object", 0 TSRMLS_CC);
-                RETURN_NULL();
-        }
+	if (obj->initialised) {
+		zend_throw_exception(zend_exception_get_default(TSRMLS_C), "Already initialised Atree Object", 0 TSRMLS_CC);
+		RETURN_NULL();
+	}
 
 	obj->t = t;
 	obj->initialised = 1;
@@ -122,14 +122,14 @@ PHP_METHOD(atree, get)
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-        if (!obj) {
-                php_atree_error(obj, "The object has not been correctly initialised");
-                RETURN_FALSE;
-        }
+	if (!obj) {
+		php_atree_error(obj, "The object has not been correctly initialised");
+		RETURN_FALSE;
+	}
 
-        if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &key_len)) {
-                RETURN_NULL();
-        }
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &key_len)) {
+		RETURN_NULL();
+	}
 
 	void *val = art_search(obj->t, (unsigned char *)key, key_len);
 	if (val == NULL) {
@@ -142,25 +142,25 @@ PHP_METHOD(atree, get)
 
 PHP_METHOD(atree, delete)
 {
-        char *key;
-        int key_len;
+	char *key;
+	int key_len;
 
-        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-        if (!obj) {
-                php_atree_error(obj, "The object has not been correctly initialised");
-                RETURN_FALSE;
-        }
+	if (!obj) {
+		php_atree_error(obj, "The object has not been correctly initialised");
+		RETURN_FALSE;
+	}
 
-        if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &key_len)) {
-                RETURN_NULL();
-        }
-
-        void *val = art_delete(obj->t, (unsigned char *)key, key_len);
-        if (val == NULL) {
-                php_atree_error(obj, "No value found for key: %s", key);
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &key_len)) {
 		RETURN_NULL();
-        }
+	}
+
+	void *val = art_delete(obj->t, (unsigned char *)key, key_len);
+	if (val == NULL) {
+		php_atree_error(obj, "No value found for key: %s", key);
+		RETURN_NULL();
+	}
 
 	RETVAL_STRING(val, 1);
 }
@@ -168,22 +168,22 @@ PHP_METHOD(atree, delete)
 int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *val) {
 	zval *arr = data;
 
-	add_assoc_stringl_ex(arr, (char *)key, key_len+1, (char *)val, strlen(val), 1);
+	add_assoc_stringl_ex(arr, (char *)key, key_len + 1, (char *)val, strlen(val), 1);
 	return 0;
 }
 
 PHP_METHOD(atree, all)
 {
-        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-        if (!obj) {
-                php_atree_error(obj, "The object has not been correctly initialised");
-                RETURN_FALSE;
-        }
+	if (!obj) {
+		php_atree_error(obj, "The object has not been correctly initialised");
+		RETURN_FALSE;
+	}
 
-        if (zend_parse_parameters_none() == FAILURE) {
-                RETURN_NULL();
-        }
+	if (zend_parse_parameters_none() == FAILURE) {
+		RETURN_NULL();
+	}
 
 	array_init(return_value);
 
@@ -195,59 +195,59 @@ PHP_METHOD(atree, all)
 
 PHP_METHOD(atree, prefix)
 {
-        char *key;
-        int key_len;
+	char *key;
+	int key_len;
 
-        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-        if (!obj) {
-                php_atree_error(obj, "The object has not been correctly initialised");
-                RETURN_FALSE;
-        }
+	if (!obj) {
+		php_atree_error(obj, "The object has not been correctly initialised");
+		RETURN_FALSE;
+	}
 
 
-        if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &key_len)) {
-                RETURN_NULL();
-        }
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &key_len)) {
+		RETURN_NULL();
+	}
 
-        array_init(return_value);
+	array_init(return_value);
 
 	if (art_iter_prefix(obj->t, (unsigned char *)key, key_len, all_cb_array, return_value) != 0) {
-                php_atree_error(obj, "Cannot iterate tree");
-                RETURN_FALSE;
-        }
+		php_atree_error(obj, "Cannot iterate tree");
+		RETURN_FALSE;
+	}
 }
 
 PHP_METHOD(atree, size)
 {
-        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-        if (!obj) {
-                php_atree_error(obj, "The object has not been correctly initialised");
-                RETURN_FALSE;
-        }
+	if (!obj) {
+		php_atree_error(obj, "The object has not been correctly initialised");
+		RETURN_FALSE;
+	}
 
-        if (zend_parse_parameters_none() == FAILURE) {
-                RETURN_NULL();
-        }
+	if (zend_parse_parameters_none() == FAILURE) {
+		RETURN_NULL();
+	}
 
 	RETURN_LONG(obj->t->size);
 }
 
 PHP_METHOD(atree, clear)
 {
-        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-        if (!obj) {
-                php_atree_error(obj, "The object has not been correctly initialised");
-                RETURN_FALSE;
-        }
+	if (!obj) {
+		php_atree_error(obj, "The object has not been correctly initialised");
+		RETURN_FALSE;
+	}
 
-        if (zend_parse_parameters_none() == FAILURE) {
-                RETURN_NULL();
-        }
+	if (zend_parse_parameters_none() == FAILURE) {
+		RETURN_NULL();
+	}
 
-        if (art_tree_clear(obj->t) != 0) {
+	if (art_tree_clear(obj->t) != 0) {
 		php_atree_error(obj, "Cannot clear tree");
 		RETURN_FALSE;
 	}
@@ -259,9 +259,9 @@ PHP_METHOD(atree, clear)
    Returns theversion as a string constant. */
 PHP_METHOD(atree, version)
 {
-        if (zend_parse_parameters_none() == FAILURE) {
-                return;
-        }
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETVAL_STRING(PHP_ATREE_VERSION, 1);
 }
@@ -277,9 +277,10 @@ static zend_function_entry php_atree_class_methods[] = {
 	PHP_ME(atree, prefix, arginfo_atree_opr, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, size, arginfo_atree_void, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, clear, arginfo_atree_void, ZEND_ACC_PUBLIC)
-	PHP_ME(atree, version, arginfo_atree_void, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(atree, version, arginfo_atree_void, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+
 	/* Aliases */
-	PHP_MALIAS(atree, __construct, init, arginfo_atree_void, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_MALIAS(atree, __construct, init, arginfo_atree_void, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_FE_END
 };
 /* }}} */
@@ -357,16 +358,16 @@ PHP_MINFO_FUNCTION(atree)
 /* {{{ atree_module_entry
 */
 zend_module_entry atree_module_entry = {
-    STANDARD_MODULE_HEADER,
-    PHP_ATREE_EXTNAME,
-    NULL,
-    PHP_MINIT(atree),
-    NULL,
-    NULL,
-    NULL,
-    PHP_MINFO(atree),
-    PHP_ATREE_VERSION,
-    STANDARD_MODULE_PROPERTIES
+	STANDARD_MODULE_HEADER,
+	PHP_ATREE_EXTNAME,
+	NULL,
+	PHP_MINIT(atree),
+	NULL,
+	NULL,
+	NULL,
+	PHP_MINFO(atree),
+	PHP_ATREE_VERSION,
+	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 

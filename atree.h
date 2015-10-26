@@ -28,28 +28,28 @@ typedef int(*art_callback)(void *data, const unsigned char *key, uint32_t key_le
  * of all the various node sizes
  */
 typedef struct {
-    uint8_t type;
-    uint8_t num_children;
-    uint32_t partial_len;
-    unsigned char partial[MAX_PREFIX_LEN];
+	uint8_t type;
+	uint8_t num_children;
+	uint32_t partial_len;
+	unsigned char partial[MAX_PREFIX_LEN];
 } art_node;
 
 /**
  * Small node with only 4 children
  */
 typedef struct {
-    art_node n;
-    unsigned char keys[4];
-    art_node *children[4];
+	art_node n;
+	unsigned char keys[4];
+	art_node *children[4];
 } art_node4;
 
 /**
  * Node with 16 children
  */
 typedef struct {
-    art_node n;
-    unsigned char keys[16];
-    art_node *children[16];
+	art_node n;
+	unsigned char keys[16];
+	art_node *children[16];
 } art_node16;
 
 /**
@@ -57,17 +57,17 @@ typedef struct {
  * a full 256 byte field.
  */
 typedef struct {
-    art_node n;
-    unsigned char keys[256];
-    art_node *children[48];
+	art_node n;
+	unsigned char keys[256];
+	art_node *children[48];
 } art_node48;
 
 /**
  * Full node with 256 children
  */
 typedef struct {
-    art_node n;
-    art_node *children[256];
+	art_node n;
+	art_node *children[256];
 } art_node256;
 
 /**
@@ -75,17 +75,17 @@ typedef struct {
  * of arbitrary size, as they include the key.
  */
 typedef struct {
-    void *value;
-    uint32_t key_len;
-    unsigned char key[];
+	void *value;
+	uint32_t key_len;
+	unsigned char key[];
 } art_leaf;
 
 /**
  * Main struct, points to root.
  */
 typedef struct {
-    art_node *root;
-    uint64_t size;
+	art_node *root;
+	uint64_t size;
 } art_tree;
 
 /**
@@ -113,7 +113,7 @@ int art_tree_clear(art_tree *t);
 # define art_size(t) ((t)->size)
 #else
 inline uint64_t art_size(art_tree *t) {
-    return t->size;
+	return t->size;
 }
 #endif
 
