@@ -62,7 +62,7 @@ static void php_atree_error(php_atree_db_object *obj, char *format, ...)
 }
 /* }}} */
 
-/* {{{ proto void Atree::init()
+/* {{{ proto resource Atree::init()
    Initializes a new ART tree. */
 PHP_METHOD(atree, init)
 {
@@ -91,6 +91,8 @@ PHP_METHOD(atree, init)
 }
 /* }}} */
 
+/* {{{ proto bool Atree::put( string $key, mixed $value )
+   Put new item into tree. */
 PHP_METHOD(atree, put)
 {
 	char *key;
@@ -119,7 +121,10 @@ PHP_METHOD(atree, put)
 
 	RETURN_TRUE;
 }
+/* }}} */
 
+/* {{{ proto mixed Atree::get( string $key )
+   Retrieve item from tree, NULL returned on failure. */
 PHP_METHOD(atree, get)
 {
 	char *key;
@@ -146,7 +151,10 @@ PHP_METHOD(atree, get)
 	*return_value = *databuf;
 	zval_copy_ctor(return_value);
 }
+/* }}} */
 
+/* {{{ proto mixed Atree::delete( string $key )
+   Remove item from tree, NULL returned on failure. */
 PHP_METHOD(atree, delete)
 {
 	char *key;
@@ -173,7 +181,10 @@ PHP_METHOD(atree, delete)
 	*return_value = *databuf;
 	zval_copy_ctor(return_value);
 }
+/* }}} */
 
+/* {{{ Iterator callback
+   Build array from iterator results. */
 int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *val) {
 	zval *arr = data;
 	zval *tempdata;
@@ -185,7 +196,10 @@ int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *v
 	add_assoc_zval_ex(arr, (char *)key, key_len + 1, tempdata);
 	return 0;
 }
+/* }}} */
 
+/* {{{ proto array Atree::all()
+   Retrieve all tree items. */
 PHP_METHOD(atree, all)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
@@ -206,7 +220,10 @@ PHP_METHOD(atree, all)
 		RETURN_FALSE;
 	}
 }
+/* }}} */
 
+/* {{{ proto array Atree::prefix( string $prefix )
+   Retrieve items matching the prefix. */
 PHP_METHOD(atree, prefix)
 {
 	char *key;
@@ -231,7 +248,10 @@ PHP_METHOD(atree, prefix)
 		RETURN_FALSE;
 	}
 }
+/* }}} */
 
+/* {{{ proto long Atree::size()
+   Return number of active items in the tree. */
 PHP_METHOD(atree, size)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
@@ -247,7 +267,10 @@ PHP_METHOD(atree, size)
 
 	RETURN_LONG(obj->t->size);
 }
+/* }}} */
 
+/* {{{ proto bool Atree::clear()
+   Truncate the tree and initialize a new one. */
 PHP_METHOD(atree, clear)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
@@ -268,9 +291,10 @@ PHP_METHOD(atree, clear)
 
 	RETURN_TRUE;
 }
+/* }}} */
 
-/* {{{ proto String Atree::version()
-   Returns theversion as a string constant. */
+/* {{{ proto string Atree::version()
+   Returns the version as a string constant. */
 PHP_METHOD(atree, version)
 {
 	if (zend_parse_parameters_none() == FAILURE) {
@@ -299,6 +323,7 @@ static zend_function_entry php_atree_class_methods[] = {
 };
 /* }}} */
 
+/* {{{ Class deconstructor */
 void atree_free_storage(void *object TSRMLS_DC)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)object;
@@ -314,7 +339,9 @@ void atree_free_storage(void *object TSRMLS_DC)
 	zend_object_std_dtor(&obj->zo TSRMLS_CC);
 	efree(obj);
 }
+/* }}} */
 
+/* {{{ Class handler */
 static zend_object_value atree_create_handler(zend_class_entry *type TSRMLS_DC)
 {
 	zval *tmp;
@@ -334,6 +361,7 @@ static zend_object_value atree_create_handler(zend_class_entry *type TSRMLS_DC)
 
 	return retval;
 }
+/* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
 */
