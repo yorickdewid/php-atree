@@ -101,6 +101,12 @@ int art_tree_init(art_tree *t);
 int art_tree_destroy(art_tree *t);
 
 /**
+ * Clear an ART tree
+ * @return 0 on success.
+ */
+int art_tree_clear(art_tree *t);
+
+/**
  * Returns the size of the ART tree.
  */
 #ifdef BROKEN_GCC_C99_INLINE

@@ -234,6 +234,27 @@ PHP_METHOD(atree, size)
 	RETURN_LONG(obj->t->size);
 }
 
+PHP_METHOD(atree, clear)
+{
+        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+        if (!obj) {
+                php_atree_error(obj, "The object has not been correctly initialised");
+                RETURN_FALSE;
+        }
+
+        if (zend_parse_parameters_none() == FAILURE) {
+                RETURN_NULL();
+        }
+
+        if (art_tree_clear(obj->t) != 0) {
+		php_atree_error(obj, "Cannot clear tree");
+		RETURN_FALSE;
+	}
+
+	RETURN_TRUE;
+}
+
 /* {{{ proto String Atree::version()
    Returns theversion as a string constant. */
 PHP_METHOD(atree, version)
@@ -255,6 +276,7 @@ static zend_function_entry php_atree_class_methods[] = {
 	PHP_ME(atree, all, arginfo_atree_void, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, prefix, arginfo_atree_opr, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, size, arginfo_atree_void, ZEND_ACC_PUBLIC)
+	PHP_ME(atree, clear, arginfo_atree_void, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, version, arginfo_atree_void, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	/* Aliases */
 	PHP_MALIAS(atree, __construct, init, arginfo_atree_void, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)

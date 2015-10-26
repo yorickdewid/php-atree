@@ -117,6 +117,17 @@ int art_tree_destroy(art_tree *t) {
 }
 
 /**
+ * Clear an ART tree
+ * @return 0 on success.
+ */
+int art_tree_clear(art_tree *t) {
+    destroy_node(t->root);
+    t->root = NULL;
+    t->size = 0;
+    return 0;
+}
+
+/**
  * Returns the size of the ART tree.
  */
 
