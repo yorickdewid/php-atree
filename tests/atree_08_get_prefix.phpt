@@ -12,7 +12,7 @@ var_dump($db->put("k3", "v3"));
 var_dump($db->put("k4", "v4"));
 var_dump($db->put("k5", "v5"));
 var_dump($db->put("user.key.color", "blue"));
-var_dump($db->put("user.key.size", "17"));
+var_dump($db->put("user.key.size", 17));
 var_dump($db->put("user.key.salary", "$ 34,45"));
 var_dump($db->put("user.name", "john doe"));
 print_r($db->prefix("user.key"));

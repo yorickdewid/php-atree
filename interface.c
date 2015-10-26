@@ -176,8 +176,13 @@ PHP_METHOD(atree, delete)
 
 int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *val) {
 	zval *arr = data;
+	zval *tempdata;
 
-	add_assoc_stringl_ex(arr, (char *)key, key_len + 1, (char *)val, strlen(val), 1);
+	ALLOC_INIT_ZVAL(tempdata);
+        *tempdata = *((zval *)val);
+        zval_copy_ctor(tempdata);
+
+	add_assoc_zval_ex(arr, (char *)key, key_len + 1, tempdata);
 	return 0;
 }
 
