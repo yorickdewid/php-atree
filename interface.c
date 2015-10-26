@@ -93,8 +93,9 @@ PHP_METHOD(atree, init)
 
 PHP_METHOD(atree, put)
 {
-	char *key, *buf;
-	int key_len, buf_len;
+	char *key;
+	int key_len;
+	zval *datavar, *databuf;
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
@@ -103,11 +104,15 @@ PHP_METHOD(atree, put)
 		RETURN_FALSE;
 	}
 
-	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &key, &key_len, &buf, &buf_len)) {
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz", &key, &key_len, &datavar)) {
 		RETURN_NULL();
 	}
 
-	if (art_insert(obj->t, (unsigned char *)key, key_len, (void *)buf) != NULL) {
+	ALLOC_INIT_ZVAL(databuf);
+	*databuf = *datavar;
+	zval_copy_ctor(databuf);
+
+	if (art_insert(obj->t, (unsigned char *)key, key_len, (void *)databuf) != NULL) {
 		php_atree_error(obj, "Unable to insert key");
 		RETURN_FALSE;
 	}
@@ -137,7 +142,9 @@ PHP_METHOD(atree, get)
 		RETURN_NULL();
 	}
 
-	RETVAL_STRING(val, 1);
+	zval *databuf = (zval *)val;
+	*return_value = *databuf;
+	zval_copy_ctor(return_value);
 }
 
 PHP_METHOD(atree, delete)
@@ -162,7 +169,9 @@ PHP_METHOD(atree, delete)
 		RETURN_NULL();
 	}
 
-	RETVAL_STRING(val, 1);
+	zval *databuf = (zval *)val;
+	*return_value = *databuf;
+	zval_copy_ctor(return_value);
 }
 
 int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *val) {
