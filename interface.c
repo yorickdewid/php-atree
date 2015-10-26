@@ -165,6 +165,38 @@ PHP_METHOD(atree, delete)
 	RETVAL_STRING(val, 1);
 }
 
+int all_cb_array(void *data, const unsigned char* key, uint32_t key_len, void *val) {
+	zval *arr = data;
+
+	add_next_index_string(arr, (char *)val, 1);
+	return 0;
+}
+
+PHP_METHOD(atree, all)
+{
+        char *key;
+        int key_len;
+
+        php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+        if (!obj) {
+                php_atree_error(obj, "The object has not been correctly initialised");
+                RETURN_FALSE;
+        }
+
+        if (zend_parse_parameters_none() == FAILURE) {
+                RETURN_NULL();
+        }
+
+	//long out[] = {0, 0};
+	array_init(return_value);
+
+	if (art_iter(obj->t, all_cb_array, return_value) != 0) {
+		php_atree_error(obj, "Cannot iterate tree");
+		RETURN_FALSE;
+	}
+}
+
 /* {{{ proto String Atree::version()
    Returns theversion as a string constant. */
 PHP_METHOD(atree, version)
@@ -183,6 +215,7 @@ static zend_function_entry php_atree_class_methods[] = {
 	PHP_ME(atree, put, arginfo_atree_put, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, get, arginfo_atree_opr, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, delete, arginfo_atree_opr, ZEND_ACC_PUBLIC)
+	PHP_ME(atree, all, arginfo_atree_void, ZEND_ACC_PUBLIC)
 	PHP_ME(atree, version, arginfo_atree_void, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	/* Aliases */
 	PHP_MALIAS(atree, __construct, init, arginfo_atree_void, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
