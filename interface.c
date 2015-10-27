@@ -101,7 +101,7 @@ PHP_METHOD(atree, put)
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -132,7 +132,7 @@ PHP_METHOD(atree, get)
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -147,8 +147,7 @@ PHP_METHOD(atree, get)
 		RETURN_NULL();
 	}
 
-	zval *databuf = (zval *)val;
-	*return_value = *databuf;
+	*return_value = *((zval *)val);
 	zval_copy_ctor(return_value);
 }
 /* }}} */
@@ -162,7 +161,7 @@ PHP_METHOD(atree, delete)
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -177,8 +176,7 @@ PHP_METHOD(atree, delete)
 		RETURN_NULL();
 	}
 
-	zval *databuf = (zval *)val;
-	*return_value = *databuf;
+	*return_value = *((zval *)val);
 	zval_copy_ctor(return_value);
 }
 /* }}} */
@@ -204,7 +202,7 @@ PHP_METHOD(atree, all)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -231,7 +229,7 @@ PHP_METHOD(atree, prefix)
 
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -256,7 +254,7 @@ PHP_METHOD(atree, size)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -275,7 +273,7 @@ PHP_METHOD(atree, clear)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		php_atree_error(obj, "The object has not been correctly initialised");
 		RETURN_FALSE;
 	}
@@ -328,7 +326,7 @@ void atree_free_storage(void *object TSRMLS_DC)
 {
 	php_atree_db_object *obj = (php_atree_db_object *)object;
 
-	if (!obj) {
+	if (!obj || !obj->initialised) {
 		return;
 	}
 
