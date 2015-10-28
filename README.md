@@ -27,12 +27,14 @@ extension=atree.dll
 
 Will load the extension from the `extension_dir` directive.
 
-## example
+## Example
 
 ```php
 $db = new atree();
+// Add new keypair to the tree
 $db->put("key", "value");
 $db->put("key2", array("foo","bar"));
+// Request value by key
 echo $db->get("key2");
 ```
 
